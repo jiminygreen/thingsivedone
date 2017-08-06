@@ -1,0 +1,43 @@
+things-ive-done
+
+POST things-ive-done\v1\records
+{
+"id":"1",
+"display-title" : "Buzz cut",
+"category":"haircut",
+"when": "2016-11-15"
+}
+
+
+GET things-ive-done\v1\records
+return:
+{
+	{
+	"id":"1",
+	"display-title" : "Buzz cut",
+	"category":"haircut",
+	"when": "2016-11-15"
+	},
+	{
+	"id":"2",
+	"display-title" : "Buzz cut",
+	"category":"haircut",
+	"when": "2015-11-15"
+	},
+	{
+	"id":"2",
+	"display-title" : "Buzz cut",
+	"category":"haircut",
+	"when": "2015-11-15"
+	}
+}
+
+GET things-ive-done\v1\categories
+return:
+{
+	"categories": [
+		"name":"haircut",
+		"name":"contract lenses",
+		"name":"whiskey"
+	]
+}
