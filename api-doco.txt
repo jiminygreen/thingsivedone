@@ -1,6 +1,6 @@
 things-ive-done
 
-POST things-ive-done\v1\records
+POST things-ive-done/v1/members/{memberId}/records
 {
 "id":"1",
 "display-title" : "Buzz cut",
@@ -9,7 +9,7 @@ POST things-ive-done\v1\records
 }
 
 
-GET things-ive-done\v1\records
+GET things-ive-done/v1/members/{memberId}/records
 return:
 {
 	{
@@ -32,7 +32,7 @@ return:
 	}
 }
 
-GET things-ive-done\v1\categories
+GET things-ive-done/v1/members/{memberId}/categories
 return:
 {
 	"categories": [

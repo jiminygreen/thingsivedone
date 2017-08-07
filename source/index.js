@@ -20,23 +20,22 @@ exports.handler = (event, context, callback) => {
     });
 
 
-    if(event.path == "/v1/categories" && event.httpMethod == "GET")
+    if(event.path.includes("categories") && event.path.includes("v1") && event.httpMethod == "GET")
     {
         v1CategoriesGetHandler(event, context, done);
         return;
     }
-    else if(event.path == "/v1/records" && event.httpMethod == "GET")
+    else if(event.path.includes("records") && event.path.includes("v1") && event.httpMethod == "GET")
     {
         v1RecordsGetHandler(event, context, done);
         return;
     }
-    else if(event.path == "/v1/records" && (event.httpMethod == "PUT" || event.httpMethod == "POST"))
+    else if(event.path.includes("records") && event.path.includes("v1") && (event.httpMethod == "PUT" || event.httpMethod == "POST"))
     {
         v1RecordsPutHandler(event, context, done);
         return;
     }
     
-
 
     // switch (event.httpMethod) {
     //     case 'DELETE':
