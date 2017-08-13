@@ -36,37 +36,4 @@ exports.handler = (event, context, callback) => {
         return;
     }
     
-
-    // switch (event.httpMethod) {
-    //     case 'DELETE':
-    //         dynamo.deleteItem(JSON.parse(event.body), done);
-    //         break;
-    //     case 'GET':
-    //         if(event.queryStringParameters.TableName)
-    //         {
-    //             var params = {
-    //                 TableName: event.queryStringParameters.TableName,
-    //                 //IndexName: "that-thing-id",
-    //                 KeyConditionExpression: 'that-thing-id = :hkey and when = :rkey',
-    //                 ExpressionAttributeValues: {
-    //                     ':hkey': 'contacts-13:59:00 12/04/2016',
-    //                     ':rkey': '13:59:00 12/04/2016'
-    //                 }
-    //             };
-
-    //             console.log(JSON.stringify(params));
-    //             dynamo.query(params, done);
-    //         }
-    //         else
-    //             done(new Error(`missing TableName parameter "${event.httpMethod}"`));
-    //         break;
-    //     case 'POST':
-    //         dynamo.putItem(JSON.parse(event.body), done);
-    //         break;
-    //     case 'PUT':
-    //         dynamo.updateItem(JSON.parse(event.body), done);
-    //         break;
-    //     default:
-    //         done(new Error(`Unsupported method "${event.httpMethod}"`));
-    // }
 };

@@ -26,12 +26,13 @@ function _handlerEntryPoint(event, context, cb) {
 
     function success(data) {
         console.log("success: " + JSON.stringify(data))
-
+        cb(null, {"created" : body })
     }
 
     function failure(data) {
         console.log("faiulure: " + JSON.stringify(data))
     
+        cb({"write failed" : data })
     }
 
     function replaceRecordInDatabase(infoCollection) {
@@ -91,7 +92,7 @@ function _handlerEntryPoint(event, context, cb) {
     }
 
     findAndUpdate(upsert);
-    return;
+
 }
 
 module.exports = _handlerEntryPoint;
