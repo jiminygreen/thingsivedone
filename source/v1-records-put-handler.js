@@ -1,58 +1,97 @@
 const AWS = require("aws-sdk");
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
-//({apiVersion: '2012-08-10'});
-
-// var createTableParams = `{
-//     TableName : "those-things3",
-//     KeySchema: [       
-//         { AttributeName: "that-thing-id", KeyType: "HASH", //Partition key },
-//         { AttributeName: "when", KeyType: "RANGE" //Sort key }
-//     ],
-//     AttributeDefinitions: [
-//         { 
-//             AttributeName: "that-thing-id",
-//             AttributeType: "S"
-//         },
-//         { 
-//             AttributeName: "when", 
-//             AttributeType: "S"
-//         }
-//     ],
-//     ProvisionedThroughput: {       
-//         ReadCapacityUnits: 5, 
-//         WriteCapacityUnits: 5
-//     }
-// }`;
 
 function _handlerEntryPoint(event, context, cb) {
     console.log('put-records:' + JSON.stringify(event.body));
 
     var body = JSON.parse(event.body);
 
-    if (body.id == null) {
-        cb( { "message": "update must contain id" }, null);
+    function appendNewInfoRecords (memberid, infoCollection) {
+        console.log("appendNewInfoRecords - infos: " + memberid + " " + JSON.stringify(infoCollection));
+
+        return dynamo.update({
+                TableName: 'those-things',
+                Key: { id: memberid },
+                ReturnValues: 'ALL_NEW',
+                UpdateExpression: 'set #info = :info',
+                ExpressionAttributeNames: {
+                '#info': "info"
+            },
+                ExpressionAttributeValues: {
+                ':info': infoCollection
+            }
+        }).promise()
     }
 
-    var params = {
-        TableName : "those-things",        
-        Item : {
-            "id" :  event.pathParameters.memberid ,
-            "info" :  [
-                {
-                    "id" : body.id,
-                    "displaytitle" : body.displaytitle, 
-                    "category" : body.category,
-                    "when" : body.when
-                }
-            ]
+    function success(data) {
+        console.log("success: " + JSON.stringify(data))
+
+    }
+
+    function failure(data) {
+        console.log("faiulure: " + JSON.stringify(data))
+    
+    }
+
+    function replaceRecordInDatabase(infoCollection) {
+        appendNewInfoRecords(event.pathParameters.memberid, infoCollection).then(success, failure);
+    }
+
+    function   recordInfoGet(body, infoCollection, replaceRecordInDatabase) {
+        console.log("Body: " + JSON.stringify(body));
+        console.log("infos: " + JSON.stringify(infoCollection));
+
+        var infoItemFound = false;
+        for(var i = 0; i < infoCollection.length; i++) {
+            if(infoCollection[i].id == body.id) {
+                infoItemFound = true;
+                console.log("about to replace item: " + infoItemFound);
+
+                // replace item in array
+                infoCollection[i] = body;
+                //save array to DynamoDB
+                replaceRecordInDatabase(infoCollection);
+            }
         }
-    };
 
-    console.log("param: " + JSON.stringify(params, null, 2));
+        if(infoItemFound == false) {
+            console.log("item not foundadd to array: " + infoItemFound);
+            
+            infoCollection.push(body);
+            replaceRecordInDatabase(infoCollection);
+        }
+    }
 
-    dynamo.put(params, cb);
+    function findAndUpdate(upsert) {
+        
+        var param = {
+            TableName:'those-things',
+            Key: { id: event.pathParameters.memberid }
+        }
+        dynamo.get(param, upsert)
 
+        console.log()
+    }
+
+    function upsert(err, data) {
+        console.log("found - err: " + JSON.stringify(err));   
+        console.log("found - data: " + JSON.stringify(data));
+        
+        if(data.Item) {
+            recordInfoGet(body, data.Item.info, replaceRecordInDatabase);
+        }
+        // if we don't get a record back then it's the first one and it can go straight into the db
+        else {
+            // There is no array yet and the function expects a collection so create one first
+            var infoCollection = new Array();
+            infoCollection.push(body);
+            appendNewInfoRecords(event.pathParameters.memberid, infoCollection ).then(success, failure);
+        }
+    }
+
+    findAndUpdate(upsert);
+    return;
 }
 
 module.exports = _handlerEntryPoint;
