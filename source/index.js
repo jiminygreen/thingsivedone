@@ -1,6 +1,7 @@
 var v1CategoriesGetHandler = require("./v1-categories-get-handler");
 var v1RecordsGetHandler = require("./v1-records-get-handler");
 var v1RecordsPutHandler = require("./v1-records-put-handler");
+var v1RecordsDeleteHandler = require("./v1-records-delete-handler");
 
 
 'use strict';
@@ -33,6 +34,11 @@ exports.handler = (event, context, callback) => {
     else if(event.path.includes("records") && event.path.includes("v1") && (event.httpMethod == "PUT" || event.httpMethod == "POST"))
     {
         v1RecordsPutHandler(event, context, done);
+        return;
+    }
+    else if(event.path.includes("records") && event.path.includes("v1") && (event.httpMethod == "DELETE"))
+    {
+        v1RecordsDeleteHandler(event, context, done);
         return;
     }
     

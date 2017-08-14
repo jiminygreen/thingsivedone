@@ -3,12 +3,9 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 
 
 function _handlerEntryPoint(event, context, cb) {
-   console.log('get-records');
-        console.log('put-records-event:' + JSON.stringify(event));
-
-            console.log('put-records-context:' + JSON.stringify(context));
-
-   
+    console.log('get-records');
+    console.log('put-records-event:' + JSON.stringify(event));
+    console.log('put-records-context:' + JSON.stringify(context));
 
    var params = {
         TableName : "those-things",
