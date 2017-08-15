@@ -3,7 +3,7 @@ const AWS = require("aws-sdk");
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 
-function appendNewInfoRecords (memberid, infoCollection) {
+function replaceRecordInDatabase (memberid, infoCollection) {
         console.log("appendNewInfoRecords - infos: " + memberid + " " + JSON.stringify(infoCollection));
 
         return dynamo.update({
@@ -32,8 +32,8 @@ function findAndUpdate(memberid, upsert) {
     }
 
 module.exports = {
-           appendNewInfoRecords : function (memberid, infoCollection) {
-            return appendNewInfoRecords(memberid, infoCollection);
+           replaceRecordInDatabase : function (memberid, infoCollection) {
+            return replaceRecordInDatabase(memberid, infoCollection);
         },
 
         findAndUpdate : function (memberid, upsert) {

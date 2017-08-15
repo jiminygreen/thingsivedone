@@ -24,7 +24,7 @@ function _handlerEntryPoint(event, context, cb) {
                 // remove the item from the array
                 infoCollection.splice(i, 1);
                 //save array to DynamoDB
-                replaceRecordInDatabase(event.pathParameters.memberid, infoCollection);
+                replaceRecordInDatabase(event.pathParameters.memberid, infoCollection).then(success, failure);
             }
         }
     }
@@ -34,13 +34,24 @@ function _handlerEntryPoint(event, context, cb) {
             console.log("del - found - data: " + JSON.stringify(data));
             
             if(data.Item) {
-                recordInfoDelete({"id" : event.pathParameters.recordid}, data.Item.info, database.appendNewInfoRecords);
+                recordInfoDelete({"id" : event.pathParameters.recordid}, data.Item.info, database.replaceRecordInDatabase);
             }
             // if we don't get a record back then it's the first one and it can go straight into the db
             else {
                 cb({"message" : "record not found"} )
             }
         }
+
+    function success(data) {
+        console.log("success: " + JSON.stringify(data))
+        cb(null, {"deleted" : data })
+    }
+
+    function failure(data) {
+        console.log("faiulure: " + JSON.stringify(data))
+    
+        cb({"write failed" : data })
+    }
 
     database.findAndUpdate(event.pathParameters.memberid, upsert);
 }
